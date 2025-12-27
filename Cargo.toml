@@ -7,6 +7,7 @@ members = [
     "aerox_ecs",
     "aerox_router",
     "aerox_plugins",
+    "aerox_client",
 ]
 resolver = "2"
 
@@ -44,3 +45,4 @@ aerox_protobuf = { path = "aerox_protobuf" }
 aerox_ecs = { path = "aerox_ecs" }
 aerox_router = { path = "aerox_router" }
 aerox_plugins = { path = "aerox_plugins" }
+aerox_client = { path = "aerox_client" }

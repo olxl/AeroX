@@ -1,0 +1,29 @@
+[package]
+name = "aerox_client"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "AeroX client library for connecting to AeroX servers"
+
+[dependencies]
+# Workspace dependencies
+tokio = { workspace = true }
+tokio-util = { workspace = true, features = ["codec"] }
+bytes = { workspace = true }
+thiserror = { workspace = true }
+prost = { workspace = true }
+async-trait = "0.1"
+
+# Internal crates
+aerox_core = { workspace = true }
+aerox_network = { workspace = true }
+aerox_protobuf = { workspace = true }
+
+# Additional client dependencies
+futures = "0.3"
+tracing = "0.1"
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["test-util", "macros"] }
