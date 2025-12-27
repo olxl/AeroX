@@ -3,7 +3,6 @@
 //! 提供请求频率限制功能。
 
 use aerox_config::ServerConfig;
-use aerox_core::App;
 use aerox_core::Plugin;
 
 /// 限流插件
@@ -20,7 +19,7 @@ impl RateLimitPlugin {
 }
 
 impl Plugin for RateLimitPlugin {
-    fn build(&self, _app: &mut App) {
+    fn build(&self) {
         // TODO: 注册限流中间件
         println!(
             "注册限流插件: 每连接每秒最大请求={:?}, 全局每秒最大请求={:?}",

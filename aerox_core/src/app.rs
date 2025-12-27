@@ -12,6 +12,38 @@ pub struct App {
     plugin_registry: PluginRegistry,
     /// 服务器配置
     config: ServerConfig,
+    /// 状态数据
+    state: State,
+}
+
+/// 应用状态
+///
+/// 存储应用级别的共享数据
+#[derive(Default)]
+pub struct State {
+    inner: Vec<Box<dyn std::any::Any + Send + Sync>>,
+}
+
+impl State {
+    /// 创建新状态
+    pub fn new() -> Self {
+        Self { inner: Vec::new() }
+    }
+
+    /// 插入数据
+    pub fn insert<T: Send + Sync + 'static>(&mut self, data: T) {
+        self.inner.push(Box::new(data));
+    }
+
+    /// 获取数据
+    pub fn get<T: std::any::Any + Send + Sync + 'static>(&self) -> Option<&T> {
+        for item in &self.inner {
+            if let Some(typed) = item.downcast_ref::<T>() {
+                return Some(typed);
+            }
+        }
+        None
+    }
 }
 
 impl App {
@@ -20,12 +52,13 @@ impl App {
         Self {
             plugin_registry: PluginRegistry::new(),
             config: ServerConfig::default(),
+            state: State::new(),
         }
     }
 
     /// 添加插件
     pub fn add_plugin(mut self, plugin: impl Plugin + 'static) -> Self {
-        self.plugin_registry.add(Box::new(plugin));
+        let _ = self.plugin_registry.add(Box::new(plugin));
         self
     }
 
@@ -33,6 +66,49 @@ impl App {
     pub fn set_config(mut self, config: ServerConfig) -> Self {
         self.config = config;
         self
+    }
+
+    /// 插入状态数据
+    pub fn insert_state<T: Send + Sync + 'static>(mut self, data: T) -> Self {
+        self.state.insert(data);
+        self
+    }
+
+    /// 获取状态引用
+    pub fn state(&self) -> &State {
+        &self.state
+    }
+
+    /// 获取配置引用
+    pub fn config(&self) -> &ServerConfig {
+        &self.config
+    }
+
+    /// 获取插件注册表引用
+    pub fn plugin_registry(&self) -> &PluginRegistry {
+        &self.plugin_registry
+    }
+
+    /// 构建应用
+    ///
+    /// 验证插件依赖并运行所有插件的 build 方法
+    pub fn build(self) -> Result<Self> {
+        // 验证插件依赖
+        self.plugin_registry.validate_dependencies()?;
+
+        // 按照依赖顺序运行所有插件的 build 方法
+        let order = self.plugin_registry.initialization_order()?;
+        for plugin_name in order {
+            if let Some(index) = self.plugin_registry.plugin_names.get(&plugin_name) {
+                if let Some(plugin) = self.plugin_registry.plugins.get(*index) {
+                    plugin.build();
+                }
+            }
+        }
+
+        println!("插件数量: {}", self.plugin_registry.count());
+
+        Ok(self)
     }
 
     /// 运行应用
@@ -44,7 +120,8 @@ impl App {
 
         // TODO: 启动 Reactor
         println!("AeroX 服务器启动中...");
-        println!("配置: {:?}", self.config.bind_addr());
+        println!("配置: {:?}", self.config.bind_address);
+        println!("插件数量: {}", self.plugin_registry.count());
 
         Ok(())
     }
@@ -60,10 +137,45 @@ impl Default for App {
 mod tests {
     use super::*;
 
+    // 测试插件
+    struct TestPlugin;
+
+    impl Plugin for TestPlugin {
+        fn name(&self) -> &'static str {
+            "test_plugin"
+        }
+
+        fn build(&self) {
+            println!("TestPlugin 构建");
+        }
+    }
+
     #[test]
     fn test_app_creation() {
         let app = App::new();
-        // 基础创建测试
         assert_eq!(app.config.bind_address, "0.0.0.0");
+    }
+
+    #[test]
+    fn test_app_add_plugin() {
+        let app = App::new().add_plugin(TestPlugin);
+        assert_eq!(app.plugin_registry().count(), 1);
+    }
+
+    #[test]
+    fn test_app_state() {
+        let app = App::new()
+            .insert_state(42i32)
+            .insert_state("test".to_string());
+
+        assert_eq!(app.state().get::<i32>(), Some(&42));
+        assert_eq!(app.state().get::<String>(), Some(&"test".to_string()));
+    }
+
+    #[tokio::test]
+    async fn test_app_build() {
+        let app = App::new().add_plugin(TestPlugin);
+        let app = app.build().unwrap();
+        assert_eq!(app.plugin_registry().count(), 1);
     }
 }

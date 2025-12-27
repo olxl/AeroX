@@ -2,7 +2,6 @@
 //!
 //! 提供连接心跳检测功能。
 
-use aerox_core::App;
 use aerox_core::Plugin;
 
 /// 心跳插件
@@ -23,7 +22,7 @@ impl Default for HeartbeatPlugin {
 }
 
 impl Plugin for HeartbeatPlugin {
-    fn build(&self, _app: &mut App) {
+    fn build(&self) {
         // TODO: 注册心跳检测系统
         println!(
             "注册心跳插件: 间隔={}s, 超时={}s",

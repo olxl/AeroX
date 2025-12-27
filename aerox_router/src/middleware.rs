@@ -344,7 +344,7 @@ mod tests {
 
     #[test]
     fn test_stack_creation() {
-        let stack = Stack::new();
+        let _stack = Stack::new();
         // 无法直接访问 middlewares，因为它现在是私有的
         // 但我们可以测试构建功能
         assert!(true);

@@ -4,7 +4,6 @@
 
 use aerox_network::ConnectionId;
 use bytes::Bytes;
-use std::any::Any;
 use std::net::SocketAddr;
 
 /// 请求上下文

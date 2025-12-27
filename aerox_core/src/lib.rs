@@ -7,13 +7,13 @@ pub mod error;
 pub mod plugin;
 
 // 导出主要类型到 crate root
-pub use crate::app::App;
+pub use crate::app::{App, State};
 pub use crate::error::{AeroXError, AeroXErrorKind, ErrorContext, Result};
 pub use crate::plugin::{Plugin, PluginRegistry};
 
 // 预导出
 pub mod prelude {
-    pub use crate::app::App;
+    pub use crate::app::{App, State};
     pub use crate::error::{AeroXError, AeroXErrorKind, ErrorContext, Result};
     pub use crate::plugin::{Plugin, PluginRegistry};
 }
