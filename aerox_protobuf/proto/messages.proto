@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package aerox;
+
+// 通用消息包装器
+message Message {
+    uint32 message_id = 1;      // 消息类型 ID
+    uint64 sequence_id = 2;     // 序列号
+    bytes payload = 3;          // 消息负载
+}
+
+// 心跳请求
+message HeartBeatRequest {
+    uint64 timestamp = 1;
+}
+
+// 心跳响应
+message HeartBeatResponse {
+    uint64 timestamp = 1;
+    uint64 server_time = 2;
+}
+
+// 聊天消息
+message ChatMessage {
+    string sender_id = 1;
+    string content = 2;
+    uint64 timestamp = 3;
+}
+
+// 用户位置
+message UserPosition {
+    string user_id = 1;
+    float x = 2;
+    float y = 3;
+    float z = 4;
+}
+
+// 认证请求
+message AuthRequest {
+    string username = 1;
+    string token = 2;
+}
+
+// 认证响应
+message AuthResponse {
+    bool success = 1;
+    string message = 2;
+    uint64 user_id = 3;
+}

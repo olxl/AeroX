@@ -32,6 +32,9 @@ thiserror = "2.0"
 toml = "0.8"
 # CPU 核心数检测
 num_cpus = "1.16"
+# Protobuf 支持
+prost = "0.13"
+prost-types = "0.13"
 
 # 内部 crate 依赖
 aerox_config = { path = "aerox_config" }
