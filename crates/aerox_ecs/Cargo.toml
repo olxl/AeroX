@@ -1,0 +1,11 @@
+[package]
+name = "aerox_ecs"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "AeroX Bevy ECS 整合层"
+
+[dependencies]
+# bevy = { workspace = true }  # 后续启用

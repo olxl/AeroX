@@ -3,14 +3,58 @@
 version = 4
 
 [[package]]
-name = "AeroX"
+name = "aerox_config"
+version = "0.1.0"
+dependencies = [
+ "serde",
+ "thiserror",
+ "toml",
+]
+
+[[package]]
+name = "aerox_core"
+version = "0.1.0"
+dependencies = [
+ "aerox_config",
+ "tokio",
+]
+
+[[package]]
+name = "aerox_ecs"
+version = "0.1.0"
+
+[[package]]
+name = "aerox_network"
 version = "0.1.0"
 dependencies = [
  "bytes",
- "serde",
  "thiserror",
  "tokio",
- "toml",
+]
+
+[[package]]
+name = "aerox_plugins"
+version = "0.1.0"
+dependencies = [
+ "aerox_config",
+ "aerox_core",
+]
+
+[[package]]
+name = "aerox_protobuf"
+version = "0.1.0"
+dependencies = [
+ "bytes",
+ "thiserror",
+]
+
+[[package]]
+name = "aerox_router"
+version = "0.1.0"
+dependencies = [
+ "aerox_network",
+ "thiserror",
+ "tokio",
 ]
 
 [[package]]

@@ -1,13 +1,23 @@
-[package]
-name = "AeroX"
+[workspace]
+members = [
+    "crates/aerox_config",
+    "crates/aerox_core",
+    "crates/aerox_network",
+    "crates/aerox_protobuf",
+    "crates/aerox_ecs",
+    "crates/aerox_router",
+    "crates/aerox_plugins",
+]
+resolver = "2"
+
+[workspace.package]
 version = "0.1.0"
 edition = "2021"
 authors = ["AeroX Team"]
-description = "高性能游戏服务器后端框架"
 license = "MIT"
 repository = "https://github.com/aerox/aerox"
 
-[dependencies]
+[workspace.dependencies]
 # 异步运行时
 tokio = { version = "1.40", features = ["full"] }
 # 零拷贝字节缓冲
@@ -18,3 +28,12 @@ serde = { version = "1.0", features = ["derive"] }
 thiserror = "2.0"
 # 配置文件解析
 toml = "0.8"
+
+# 内部 crate 依赖
+aerox_config = { path = "crates/aerox_config" }
+aerox_core = { path = "crates/aerox_core" }
+aerox_network = { path = "crates/aerox_network" }
+aerox_protobuf = { path = "crates/aerox_protobuf" }
+aerox_ecs = { path = "crates/aerox_ecs" }
+aerox_router = { path = "crates/aerox_router" }
+aerox_plugins = { path = "crates/aerox_plugins" }

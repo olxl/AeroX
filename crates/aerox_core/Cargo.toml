@@ -1,0 +1,12 @@
+[package]
+name = "aerox_core"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "AeroX 核心运行时和插件系统"
+
+[dependencies]
+tokio = { workspace = true }
+aerox_config = { workspace = true }

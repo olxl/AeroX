@@ -1,0 +1,12 @@
+[package]
+name = "aerox_plugins"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "AeroX 官方插件集合"
+
+[dependencies]
+aerox_core = { workspace = true }
+aerox_config = { workspace = true }

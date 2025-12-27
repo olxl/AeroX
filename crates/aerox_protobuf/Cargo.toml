@@ -1,0 +1,13 @@
+[package]
+name = "aerox_protobuf"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "AeroX Protobuf 编解码支持"
+
+[dependencies]
+# prost = { workspace = true }  # 后续启用
+bytes = { workspace = true }
+thiserror = { workspace = true }

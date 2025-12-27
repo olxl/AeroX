@@ -12,48 +12,93 @@
 //! - 灵活的路由和中间件系统
 //! - 插件化架构
 //!
+//! ## Crate 结构
+//!
+//! - [`aerox_config`] - 配置管理系统
+//! - [`aerox_core`] - 核心运行时和插件系统
+//! - [`aerox_network`] - 网络层抽象和协议实现
+//! - [`aerox_protobuf`] - Protobuf 编解码支持
+//! - [`aerox_ecs`] - Bevy ECS 整合层
+//! - [`aerox_router`] - 路由和中间件系统
+//! - [`aerox_plugins`] - 官方插件集合
+//!
 //! ## 快速开始
 //!
 //! ```rust,no_run,ignore
-//! use AeroX::prelude::*;
+//! use aerox::prelude::*;
 //!
-//! fn main() -> AeroX::Result<()> {
-//!     // 创建配置
-//!     let config = ServerConfig::default();
+//! #[tokio::main]
+//! async fn main() -> aerox::Result<()> {
+//!     // 创建应用
+//!     let app = App::new()
+//!         .add_plugin(HeartbeatPlugin::default())
+//!         .set_config(ServerConfig::default());
 //!
-//!     // 验证配置
-//!     config.validate()?;
+//!     // 运行服务器
+//!     app.run().await?;
 //!
 //!     Ok(())
 //! }
-//! # Ok::<(), AeroX::AeroXError>(())
+//! # Ok::<(), Box<dyn std::error::Error>>(())
 //! ```
-//!
-//! 注意：完整的 API 示例将在后续 Phase 中提供。
 //!
 //! ## 模块组织
 //!
-//! - [`config`] - 配置管理系统
-//! - [`error`] - 错误类型定义
-//! - [`reactor`] - Reactor 模式实现
-//! - [`connection`] - 连接管理
-//! - [`protocol`] - 协议和编解码
-//! - [`router`] - 路由系统
-//! - [`middleware`] - 中间件系统
-//! - [`plugin`] - 插件系统
+//! ### 配置模块
+//! - ServerConfig - 服务器基础配置
+//! - ReactorConfig - Reactor 模式配置
+//!
+//! ### 核心模块
+//! - App - 应用构建器
+//! - Plugin - 插件 trait
+//! - PluginRegistry - 插件注册表
+//!
+//! ### 网络模块
+//! - Transport - 传输层抽象
+//! - Connection - 连接管理
+//! - ConnectionId - 连接唯一标识
+//!
+//! ### 路由模块
+//! - Router - 消息路由器
+//! - Context - 请求上下文
+//!
+//! ### 插件模块
+//! - HeartbeatPlugin - 心跳检测插件
+//! - RateLimitPlugin - 限流插件
 
-pub mod config;
-pub mod error;
-
-// 导出常用类型到 crate root
-pub use crate::config::{ServerConfig, ReactorConfig};
-pub use crate::error::{AeroXError, Result};
+// 重新导出所有子 crate
+pub use aerox_config;
+pub use aerox_core;
+pub use aerox_network;
+pub use aerox_protobuf;
+pub use aerox_ecs;
+pub use aerox_router;
+pub use aerox_plugins;
 
 // 预导出常用类型
 pub mod prelude {
-    pub use crate::config::{ServerConfig, ReactorConfig};
-    pub use crate::error::{AeroXError, Result};
+    // 配置
+    pub use aerox_config::{ServerConfig, ReactorConfig, ConfigError};
+
+    // 核心
+    pub use aerox_core::{App, Plugin};
+    pub use aerox_core::plugin::PluginRegistry;
+
+    // 网络
+    pub use aerox_network::{Connection, ConnectionId, TransportError};
+
+    // 路由
+    pub use aerox_router::{Router, Context, RouterError};
+
+    // 插件
+    pub use aerox_plugins::{HeartbeatPlugin, RateLimitPlugin};
+
+    // 常用 Result 类型
+    pub use std::result::Result as StdResult;
 }
+
+/// AeroX 统一错误类型
+pub type Result<T> = StdResult<T, Box<dyn std::error::Error + Send + Sync>>;
 
 // 版本信息
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");

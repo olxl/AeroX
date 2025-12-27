@@ -1,0 +1,13 @@
+[package]
+name = "aerox_router"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "AeroX 路由和中间件系统"
+
+[dependencies]
+tokio = { workspace = true }
+thiserror = { workspace = true }
+aerox_network = { workspace = true }
