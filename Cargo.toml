@@ -1,0 +1,20 @@
+[package]
+name = "AeroX"
+version = "0.1.0"
+edition = "2021"
+authors = ["AeroX Team"]
+description = "高性能游戏服务器后端框架"
+license = "MIT"
+repository = "https://github.com/aerox/aerox"
+
+[dependencies]
+# 异步运行时
+tokio = { version = "1.40", features = ["full"] }
+# 零拷贝字节缓冲
+bytes = "1.7"
+# 序列化支持
+serde = { version = "1.0", features = ["derive"] }
+# 错误处理
+thiserror = "2.0"
+# 配置文件解析
+toml = "0.8"
