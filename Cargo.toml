@@ -1,12 +1,12 @@
 [workspace]
 members = [
-    "crates/aerox_config",
-    "crates/aerox_core",
-    "crates/aerox_network",
-    "crates/aerox_protobuf",
-    "crates/aerox_ecs",
-    "crates/aerox_router",
-    "crates/aerox_plugins",
+    "aerox_config",
+    "aerox_core",
+    "aerox_network",
+    "aerox_protobuf",
+    "aerox_ecs",
+    "aerox_router",
+    "aerox_plugins",
 ]
 resolver = "2"
 
@@ -30,10 +30,10 @@ thiserror = "2.0"
 toml = "0.8"
 
 # 内部 crate 依赖
-aerox_config = { path = "crates/aerox_config" }
-aerox_core = { path = "crates/aerox_core" }
-aerox_network = { path = "crates/aerox_network" }
-aerox_protobuf = { path = "crates/aerox_protobuf" }
-aerox_ecs = { path = "crates/aerox_ecs" }
-aerox_router = { path = "crates/aerox_router" }
-aerox_plugins = { path = "crates/aerox_plugins" }
+aerox_config = { path = "aerox_config" }
+aerox_core = { path = "aerox_core" }
+aerox_network = { path = "aerox_network" }
+aerox_protobuf = { path = "aerox_protobuf" }
+aerox_ecs = { path = "aerox_ecs" }
+aerox_router = { path = "aerox_router" }
+aerox_plugins = { path = "aerox_plugins" }

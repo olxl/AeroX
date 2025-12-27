@@ -1,0 +1,37 @@
+# AeroX 服务器配置示例
+# 复制此文件为 server.toml 并根据需要修改
+
+[server]
+# 绑定地址（0.0.0.0 表示监听所有网卡）
+bind_address = "0.0.0.0"
+
+# 监听端口
+port = 8080
+
+# 最大连接数（None 表示无限制）
+# max_connections = 10000
+
+# 每个连接每秒最大请求数
+# max_requests_per_second_per_connection = 1000
+
+# 全局每秒最大请求数
+# max_requests_per_second_total = 100000
+
+# 是否启用 DDoS 防护
+enable_ddos_protection = true
+
+# 工作线程数量（None 表示使用 CPU 核心数）
+# worker_threads = 4
+
+[reactor]
+# Reactor 缓冲区大小（字节）
+reactor_buffer_size = 8192
+
+# 消息批处理大小
+batch_size = 32
+
+# 批处理超时时间（毫秒）
+batch_timeout_ms = 10
+
+# 连接超时时间（秒）
+connection_timeout_secs = 300
