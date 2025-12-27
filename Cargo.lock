@@ -20,8 +20,11 @@ dependencies = [
  "aerox_plugins",
  "aerox_protobuf",
  "aerox_router",
+ "bytes",
+ "futures-util",
  "prost",
  "tokio",
+ "tokio-util",
 ]
 
 [[package]]

@@ -34,6 +34,8 @@ tokio = { version = "1.40", features = ["full"] }
 tokio-util = { version = "0.7", features = ["codec"] }
 # 零拷贝字节缓冲
 bytes = "1.7"
+# 异步工具
+futures-util = "0.3"
 # 序列化支持
 serde = { version = "1.0", features = ["derive"] }
 # 错误处理
@@ -66,6 +68,9 @@ aerox_router = { workspace = true }
 aerox_plugins = { workspace = true }
 aerox_client = { workspace = true }
 tokio = { workspace = true }
+tokio-util = { workspace = true }
+bytes = { workspace = true }
+futures-util = { workspace = true }
 prost = { workspace = true }
 
 [dev-dependencies]
