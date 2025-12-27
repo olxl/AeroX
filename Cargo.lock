@@ -9,6 +9,22 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "6cf780eb737f2d4a49ffbd512324d53ad089070f813f7be7f99dbd5123a7f448"
 
 [[package]]
+name = "aerox"
+version = "0.1.0"
+dependencies = [
+ "aerox_client",
+ "aerox_config",
+ "aerox_core",
+ "aerox_ecs",
+ "aerox_network",
+ "aerox_plugins",
+ "aerox_protobuf",
+ "aerox_router",
+ "prost",
+ "tokio",
+]
+
+[[package]]
 name = "aerox_client"
 version = "0.1.0"
 dependencies = [

@@ -85,20 +85,20 @@ pub mod prelude {
     pub use aerox_core::plugin::PluginRegistry;
 
     // 网络
-    pub use aerox_network::{Connection, ConnectionId, TransportError};
+    pub use aerox_network::{Connection, ConnectionId};
 
     // 路由
-    pub use aerox_router::{Router, Context, RouterError};
+    pub use aerox_router::prelude::*;
 
     // 插件
-    pub use aerox_plugins::{HeartbeatPlugin, RateLimitPlugin};
+    pub use aerox_plugins::prelude::*;
 
     // 常用 Result 类型
     pub use std::result::Result as StdResult;
 }
 
 /// AeroX 统一错误类型
-pub type Result<T> = StdResult<T, Box<dyn std::error::Error + Send + Sync>>;
+pub type Result<T> = std::result::Result<T, Box<dyn std::error::Error + Send + Sync>>;
 
 // 版本信息
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");

@@ -1,3 +1,12 @@
+[package]
+name = "aerox"
+version.workspace = true
+edition.workspace = true
+authors.workspace = true
+license.workspace = true
+repository.workspace = true
+description = "AeroX - 高性能游戏服务器后端框架"
+
 [workspace]
 members = [
     "aerox_config",
@@ -46,3 +55,18 @@ aerox_ecs = { path = "aerox_ecs" }
 aerox_router = { path = "aerox_router" }
 aerox_plugins = { path = "aerox_plugins" }
 aerox_client = { path = "aerox_client" }
+
+[dependencies]
+aerox_config = { workspace = true }
+aerox_core = { workspace = true }
+aerox_network = { workspace = true }
+aerox_protobuf = { workspace = true }
+aerox_ecs = { workspace = true }
+aerox_router = { workspace = true }
+aerox_plugins = { workspace = true }
+aerox_client = { workspace = true }
+tokio = { workspace = true }
+prost = { workspace = true }
+
+[dev-dependencies]
+tokio = { workspace = true, features = ["test-util", "macros"] }

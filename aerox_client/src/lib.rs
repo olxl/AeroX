@@ -74,13 +74,13 @@ pub use crate::error::{ClientError, Result};
 pub use crate::stream::StreamClient;
 
 // Re-export High-level API
-pub use crate::high_level::HighLevelClient;
+pub use crate::high_level::{HighLevelClient, ClientEvent};
 
 // Prelude module for common imports
 pub mod prelude {
     pub use crate::config::ClientConfig;
     pub use crate::connection::{ClientConnection, ClientState};
     pub use crate::error::{ClientError, Result};
-    pub use crate::high_level::HighLevelClient;
+    pub use crate::high_level::{HighLevelClient, ClientEvent};
     pub use crate::stream::StreamClient;
 }
