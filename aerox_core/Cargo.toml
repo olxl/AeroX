@@ -11,3 +11,10 @@ description = "AeroX 核心运行时和插件系统"
 tokio = { workspace = true }
 aerox_config = { workspace = true }
 thiserror = { workspace = true }
+
+[dev-dependencies]
+aerox_network = { workspace = true }
+aerox_protobuf = { workspace = true }
+aerox_ecs = { workspace = true }
+aerox_router = { workspace = true }
+bytes = { workspace = true }

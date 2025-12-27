@@ -22,6 +22,11 @@ name = "aerox_core"
 version = "0.1.0"
 dependencies = [
  "aerox_config",
+ "aerox_ecs",
+ "aerox_network",
+ "aerox_protobuf",
+ "aerox_router",
+ "bytes",
  "thiserror 2.0.17",
  "tokio",
 ]
