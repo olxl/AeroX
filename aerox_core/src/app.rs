@@ -38,7 +38,8 @@ impl App {
     /// 运行应用
     pub async fn run(self) -> Result<()> {
         // 验证配置
-        self.config.validate()
+        self.config
+            .validate()
             .map_err(|e| AeroXError::config(e.to_string()))?;
 
         // TODO: 启动 Reactor

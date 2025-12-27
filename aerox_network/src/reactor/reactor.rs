@@ -2,13 +2,13 @@
 //!
 //! Reactor 模式的主入口，管理 Acceptor 和多个 Worker。
 
-use crate::reactor::{acceptor::Acceptor, worker::Worker, balancer::ConnectionBalancer};
+use crate::reactor::{acceptor::Acceptor, balancer::ConnectionBalancer, worker::Worker};
+use aerox_config::ConfigError;
+use aerox_config::{ReactorConfig, ServerConfig};
 use aerox_core::{AeroXError, Result};
-use aerox_config::{ServerConfig, ReactorConfig};
 use std::sync::Arc;
 use tokio::net::TcpListener;
 use tokio::task::JoinHandle;
-use aerox_config::ConfigError;
 
 /// TCP Reactor
 ///
@@ -42,11 +42,14 @@ impl TcpReactor {
     /// 启动 Acceptor 和多个 Worker
     pub async fn run(mut self) -> Result<()> {
         // 验证配置
-        self.server_config.validate()
+        self.server_config
+            .validate()
             .map_err(|e: ConfigError| AeroXError::config(e.to_string()))?;
 
         // 确定工作线程数
-        let worker_count = self.server_config.worker_threads
+        let worker_count = self
+            .server_config
+            .worker_threads
             .unwrap_or_else(|| num_cpus::get());
 
         println!("AeroX TCP Reactor 启动:");

@@ -5,9 +5,9 @@
 use crate::reactor::acceptor::NewConnection;
 use aerox_core::Result;
 use std::sync::Arc;
+use tokio::io::AsyncWriteExt;
 use tokio::sync::mpsc;
 use tokio::task::JoinHandle;
-use tokio::io::AsyncWriteExt;
 
 /// Worker 配置
 #[derive(Debug, Clone)]
@@ -63,18 +63,23 @@ impl Worker {
             loop {
                 // 接收新连接
                 match self.rx.recv().await {
-                    Some(NewConnection { mut stream, remote_addr }) => {
+                    Some(NewConnection {
+                        mut stream,
+                        remote_addr,
+                    }) => {
                         println!("Worker {} 接受新连接: {}", self.id, remote_addr);
 
                         // 增加活跃连接计数
-                        self.active_connections.fetch_add(1, std::sync::atomic::Ordering::Relaxed);
+                        self.active_connections
+                            .fetch_add(1, std::sync::atomic::Ordering::Relaxed);
 
                         // TODO: 处理连接
                         // 当前阶段仅关闭连接
                         let _ = stream.shutdown().await;
 
                         // 减少活跃连接计数
-                        self.active_connections.fetch_sub(1, std::sync::atomic::Ordering::Relaxed);
+                        self.active_connections
+                            .fetch_sub(1, std::sync::atomic::Ordering::Relaxed);
                     }
                     None => {
                         println!("Worker {} 通道关闭，退出", self.id);
@@ -89,7 +94,8 @@ impl Worker {
 
     /// 获取活跃连接数
     pub fn active_connections(&self) -> usize {
-        self.active_connections.load(std::sync::atomic::Ordering::Relaxed)
+        self.active_connections
+            .load(std::sync::atomic::Ordering::Relaxed)
     }
 }
 

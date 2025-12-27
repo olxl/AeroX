@@ -2,8 +2,8 @@
 //!
 //! 提供网络事件到 ECS 事件的转换和 Tick 调度系统。
 
-pub mod world;
 pub mod events;
+pub mod world;
 
 // 预导出
 pub mod prelude {

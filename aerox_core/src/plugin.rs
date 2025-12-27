@@ -2,8 +2,8 @@
 //!
 //! 定义 Plugin trait 和插件注册表。
 
-use std::collections::HashMap;
 use crate::app::App;
+use std::collections::HashMap;
 
 /// Plugin trait - 所有插件必须实现此 trait
 pub trait Plugin: Send + Sync {

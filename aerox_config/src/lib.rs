@@ -87,7 +87,8 @@ impl Default for ServerConfig {
             bind_address: default_bind_address(),
             port: default_port(),
             max_connections: None,
-            max_requests_per_second_per_connection: default_max_requests_per_second_per_connection(),
+            max_requests_per_second_per_connection: default_max_requests_per_second_per_connection(
+            ),
             max_requests_per_second_total: default_max_requests_per_second_total(),
             enable_ddos_protection: default_enable_ddos_protection(),
             worker_threads: None,
@@ -134,26 +135,30 @@ impl ServerConfig {
 
         // 端口
         if let Ok(port_str) = std::env::var("AEROX_PORT") {
-            self.port = port_str.parse()
+            self.port = port_str
+                .parse()
                 .map_err(|_| ConfigError::EnvVar("AEROX_PORT 必须是有效的 u16 数字".to_string()))?;
         }
 
         // 最大连接数
         if let Ok(max_conn) = std::env::var("AEROX_MAX_CONNECTIONS") {
-            self.max_connections = Some(max_conn.parse()
-                .map_err(|_| ConfigError::EnvVar("AEROX_MAX_CONNECTIONS 必须是有效的 u32 数字".to_string()))?);
+            self.max_connections = Some(max_conn.parse().map_err(|_| {
+                ConfigError::EnvVar("AEROX_MAX_CONNECTIONS 必须是有效的 u32 数字".to_string())
+            })?);
         }
 
         // DDoS 防护
         if let Ok(ddos) = std::env::var("AEROX_ENABLE_DDOS_PROTECTION") {
-            self.enable_ddos_protection = ddos.parse()
-                .map_err(|_| ConfigError::EnvVar("AEROX_ENABLE_DDOS_PROTECTION 必须是 true 或 false".to_string()))?;
+            self.enable_ddos_protection = ddos.parse().map_err(|_| {
+                ConfigError::EnvVar("AEROX_ENABLE_DDOS_PROTECTION 必须是 true 或 false".to_string())
+            })?;
         }
 
         // 工作线程数
         if let Ok(threads) = std::env::var("AEROX_WORKER_THREADS") {
-            self.worker_threads = Some(threads.parse()
-                .map_err(|_| ConfigError::EnvVar("AEROX_WORKER_THREADS 必须是有效的 usize 数字".to_string()))?);
+            self.worker_threads = Some(threads.parse().map_err(|_| {
+                ConfigError::EnvVar("AEROX_WORKER_THREADS 必须是有效的 usize 数字".to_string())
+            })?);
         }
 
         Ok(self)
@@ -182,7 +187,9 @@ impl ServerConfig {
                 return Err(ConfigError::Validation("工作线程数不能为 0".to_string()));
             }
             if threads > 512 {
-                return Err(ConfigError::Validation("工作线程数过大 (建议 <= 512)".to_string()));
+                return Err(ConfigError::Validation(
+                    "工作线程数过大 (建议 <= 512)".to_string(),
+                ));
             }
         }
 
@@ -334,9 +341,7 @@ mod tests {
     #[test]
     fn test_env_override_port() {
         std::env::set_var("AEROX_PORT", "9999");
-        let config = ServerConfig::default()
-            .load_with_env_override()
-            .unwrap();
+        let config = ServerConfig::default().load_with_env_override().unwrap();
         assert_eq!(config.port, 9999);
         std::env::remove_var("AEROX_PORT");
     }
@@ -344,9 +349,7 @@ mod tests {
     #[test]
     fn test_env_override_address() {
         std::env::set_var("AEROX_BIND_ADDRESS", "127.0.0.1");
-        let config = ServerConfig::default()
-            .load_with_env_override()
-            .unwrap();
+        let config = ServerConfig::default().load_with_env_override().unwrap();
         assert_eq!(config.bind_address, "127.0.0.1");
         std::env::remove_var("AEROX_BIND_ADDRESS");
     }
@@ -354,8 +357,7 @@ mod tests {
     #[test]
     fn test_env_override_invalid_port() {
         std::env::set_var("AEROX_PORT", "invalid");
-        let result = ServerConfig::default()
-            .load_with_env_override();
+        let result = ServerConfig::default().load_with_env_override();
         assert!(result.is_err());
         std::env::remove_var("AEROX_PORT");
     }
@@ -363,9 +365,7 @@ mod tests {
     #[test]
     fn test_env_override_ddos_protection() {
         std::env::set_var("AEROX_ENABLE_DDOS_PROTECTION", "false");
-        let config = ServerConfig::default()
-            .load_with_env_override()
-            .unwrap();
+        let config = ServerConfig::default().load_with_env_override().unwrap();
         assert!(!config.enable_ddos_protection);
         std::env::remove_var("AEROX_ENABLE_DDOS_PROTECTION");
     }
@@ -373,9 +373,7 @@ mod tests {
     #[test]
     fn test_env_override_max_connections() {
         std::env::set_var("AEROX_MAX_CONNECTIONS", "5000");
-        let config = ServerConfig::default()
-            .load_with_env_override()
-            .unwrap();
+        let config = ServerConfig::default().load_with_env_override().unwrap();
         assert_eq!(config.max_connections, Some(5000));
         std::env::remove_var("AEROX_MAX_CONNECTIONS");
     }

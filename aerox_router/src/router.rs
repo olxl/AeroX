@@ -2,13 +2,13 @@
 //!
 //! 消息 ID 到处理函数的映射。
 
-use std::collections::HashMap;
 use aerox_core::{AeroXError, Result};
+use std::collections::HashMap;
 
 /// 路由器
 pub struct Router {
     /// 路由表
-    routes: HashMap<u32, String>,  // message_id -> handler_name
+    routes: HashMap<u32, String>, // message_id -> handler_name
 }
 
 impl Router {

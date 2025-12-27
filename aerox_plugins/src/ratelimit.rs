@@ -2,9 +2,9 @@
 //!
 //! 提供请求频率限制功能。
 
-use aerox_core::Plugin;
-use aerox_core::App;
 use aerox_config::ServerConfig;
+use aerox_core::App;
+use aerox_core::Plugin;
 
 /// 限流插件
 pub struct RateLimitPlugin {

@@ -46,7 +46,10 @@ impl Acceptor {
     ///
     /// 开始接受新连接并分配给 Worker
     pub async fn run(&mut self) -> Result<()> {
-        println!("AeroX Reactor: 开始接受连接，监听地址: {:?}", self.listener.local_addr());
+        println!(
+            "AeroX Reactor: 开始接受连接，监听地址: {:?}",
+            self.listener.local_addr()
+        );
 
         loop {
             // 接受新连接
@@ -55,12 +58,16 @@ impl Acceptor {
                     // 分配给 Worker
                     let worker_id = self.balancer.next_worker();
 
-                    if let Err(_) = self.worker_txs[worker_id].send(NewConnection {
-                        stream,
-                        remote_addr,
-                    }).await {
+                    if let Err(_) = self.worker_txs[worker_id]
+                        .send(NewConnection {
+                            stream,
+                            remote_addr,
+                        })
+                        .await
+                    {
                         return Err(AeroXError::network(format!(
-                            "无法发送连接到 Worker {}", worker_id
+                            "无法发送连接到 Worker {}",
+                            worker_id
                         )));
                     }
                 }

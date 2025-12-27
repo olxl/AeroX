@@ -2,9 +2,9 @@
 //!
 //! 定义所有框架级别的错误类型。
 
+use super::context::ErrorContext;
 use std::io;
 use thiserror::Error;
-use super::context::ErrorContext;
 
 /// AeroX 框架核心错误类型
 #[derive(Error, Debug)]

@@ -19,8 +19,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // 示例 2: 加载默认配置并应用环境变量覆盖
     println!("2. 加载默认配置并应用环境变量覆盖:");
-    let config = ServerConfig::default()
-        .load_with_env_override()?;
+    let config = ServerConfig::default().load_with_env_override()?;
 
     println!("   ✓ 配置加载成功:");
     println!("     - 地址: {}", config.bind_addr());
@@ -46,8 +45,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     std::env::remove_var("AEROX_MAX_CONNECTIONS");
 
     println!("5. 清理环境变量后:");
-    let config = ServerConfig::default()
-        .load_with_env_override()?;
+    let config = ServerConfig::default().load_with_env_override()?;
     println!("   地址: {}", config.bind_addr());
     println!("   端口: {}", config.port);
 
