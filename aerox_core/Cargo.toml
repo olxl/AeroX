@@ -10,3 +10,4 @@ description = "AeroX 核心运行时和插件系统"
 [dependencies]
 tokio = { workspace = true }
 aerox_config = { workspace = true }
+thiserror = { workspace = true }

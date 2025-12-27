@@ -3,6 +3,7 @@
 //! 提供链式 API 构建应用。
 
 use crate::plugin::{Plugin, PluginRegistry};
+use crate::{AeroXError, Result};
 use aerox_config::ServerConfig;
 
 /// 应用构建器
@@ -35,9 +36,10 @@ impl App {
     }
 
     /// 运行应用
-    pub async fn run(self) -> Result<(), Box<dyn std::error::Error>> {
+    pub async fn run(self) -> Result<()> {
         // 验证配置
-        self.config.validate()?;
+        self.config.validate()
+            .map_err(|e| AeroXError::config(e.to_string()))?;
 
         // TODO: 启动 Reactor
         println!("AeroX 服务器启动中...");

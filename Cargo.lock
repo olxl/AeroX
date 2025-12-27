@@ -16,6 +16,7 @@ name = "aerox_core"
 version = "0.1.0"
 dependencies = [
  "aerox_config",
+ "thiserror",
  "tokio",
 ]
 
@@ -27,6 +28,7 @@ version = "0.1.0"
 name = "aerox_network"
 version = "0.1.0"
 dependencies = [
+ "aerox_core",
  "bytes",
  "thiserror",
  "tokio",
@@ -52,6 +54,7 @@ dependencies = [
 name = "aerox_router"
 version = "0.1.0"
 dependencies = [
+ "aerox_core",
  "aerox_network",
  "thiserror",
  "tokio",

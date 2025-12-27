@@ -3,19 +3,7 @@
 //! 消息 ID 到处理函数的映射。
 
 use std::collections::HashMap;
-use thiserror::Error;
-
-/// 路由错误
-#[derive(Error, Debug)]
-pub enum RouterError {
-    /// 路由不存在
-    #[error("路由不存在: {0}")]
-    RouteNotFound(u32),
-
-    /// 路由已存在
-    #[error("路由已存在: {0}")]
-    RouteAlreadyExists(u32),
-}
+use aerox_core::{AeroXError, Result};
 
 /// 路由器
 pub struct Router {
@@ -32,9 +20,9 @@ impl Router {
     }
 
     /// 添加路由
-    pub fn add_route(&mut self, message_id: u32, handler: String) -> Result<(), RouterError> {
+    pub fn add_route(&mut self, message_id: u32, handler: String) -> Result<()> {
         if self.routes.contains_key(&message_id) {
-            return Err(RouterError::RouteAlreadyExists(message_id));
+            return Err(AeroXError::router(format!("路由已存在: {}", message_id)));
         }
         self.routes.insert(message_id, handler);
         Ok(())
@@ -62,5 +50,13 @@ mod tests {
         router.add_route(1001, "handler1".to_string()).unwrap();
         assert_eq!(router.get_route(1001), Some(&"handler1".to_string()));
         assert_eq!(router.get_route(1002), None);
+    }
+
+    #[test]
+    fn test_duplicate_route() {
+        let mut router = Router::new();
+        router.add_route(1001, "handler1".to_string()).unwrap();
+        let result = router.add_route(1001, "handler2".to_string());
+        assert!(result.is_err());
     }
 }

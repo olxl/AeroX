@@ -3,27 +3,11 @@
 //! 定义传输协议的统一接口。
 
 use crate::connection::Connection;
+use aerox_core::AeroXError;
 use std::net::SocketAddr;
-use thiserror::Error;
-
-/// 传输错误
-#[derive(Error, Debug)]
-pub enum TransportError {
-    /// IO 错误
-    #[error("IO 错误: {0}")]
-    Io(#[from] std::io::Error),
-
-    /// 连接错误
-    #[error("连接错误: {0}")]
-    Connection(String),
-
-    /// 超时错误
-    #[error("操作超时")]
-    Timeout,
-}
 
 /// 传输层 Result 类型
-pub type Result<T> = std::result::Result<T, TransportError>;
+pub type Result<T> = std::result::Result<T, AeroXError>;
 
 /// 传输层抽象 trait
 pub trait Transport: Send + Sync {
