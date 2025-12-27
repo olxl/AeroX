@@ -26,6 +26,13 @@ where
     }
 }
 
+/// 为 Box<dyn Handler> 实现 Handler
+impl Handler for Box<dyn Handler> {
+    fn call(&self, ctx: Context) -> Pin<Box<dyn Future<Output = Result<()>> + Send>> {
+        self.as_ref().call(ctx)
+    }
+}
+
 /// 路由器
 ///
 /// 管理消息 ID 到处理器的映射
