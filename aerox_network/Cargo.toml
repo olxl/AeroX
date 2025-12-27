@@ -9,6 +9,7 @@ description = "AeroX 网络层抽象和协议实现"
 
 [dependencies]
 tokio = { workspace = true }
+tokio-util = { workspace = true }
 bytes = { workspace = true }
 thiserror = { workspace = true }
 aerox_core = { workspace = true }

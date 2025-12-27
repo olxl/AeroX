@@ -20,6 +20,8 @@ repository = "https://github.com/aerox/aerox"
 [workspace.dependencies]
 # 异步运行时
 tokio = { version = "1.40", features = ["full"] }
+# Tokio 工具（编解码器）
+tokio-util = { version = "0.7", features = ["codec"] }
 # 零拷贝字节缓冲
 bytes = "1.7"
 # 序列化支持
