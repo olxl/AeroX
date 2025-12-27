@@ -6,12 +6,16 @@ pub mod context;
 pub mod middleware;
 pub mod router;
 
+// 重新导出主要类型
+pub use crate::context::{Context, Extensions};
+pub use crate::router::Handler;
+
 // 重新导出错误类型
 pub use aerox_core::{AeroXError, Result};
 
 // 预导出
 pub mod prelude {
-    pub use crate::context::Context;
-    pub use crate::router::Router;
+    pub use crate::context::{Context, Extensions};
+    pub use crate::router::{Handler, Router};
     pub use aerox_core::{AeroXError, Result};
 }

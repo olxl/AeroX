@@ -59,6 +59,7 @@ version = "0.1.0"
 dependencies = [
  "aerox_core",
  "aerox_network",
+ "bytes",
  "thiserror",
  "tokio",
 ]

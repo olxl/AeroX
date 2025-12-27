@@ -9,6 +9,7 @@ description = "AeroX 路由和中间件系统"
 
 [dependencies]
 tokio = { workspace = true }
+bytes = { workspace = true }
 thiserror = { workspace = true }
 aerox_network = { workspace = true }
 aerox_core = { workspace = true }
