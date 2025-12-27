@@ -4,6 +4,7 @@
 
 pub mod transport;
 pub mod connection;
+pub mod reactor;
 
 // 导出主要类型到 crate root
 pub use crate::connection::{Connection, ConnectionId, ConnectionIdGenerator};
@@ -15,5 +16,6 @@ pub use aerox_core::{AeroXError, Result};
 pub mod prelude {
     pub use crate::transport::Transport;
     pub use crate::connection::{Connection, ConnectionId};
+    pub use crate::reactor::{TcpReactor, Acceptor, Worker, ConnectionBalancer};
     pub use aerox_core::{AeroXError, Result};
 }

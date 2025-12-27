@@ -28,6 +28,8 @@ serde = { version = "1.0", features = ["derive"] }
 thiserror = "2.0"
 # 配置文件解析
 toml = "0.8"
+# CPU 核心数检测
+num_cpus = "1.16"
 
 # 内部 crate 依赖
 aerox_config = { path = "aerox_config" }
