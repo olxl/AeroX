@@ -8,4 +8,10 @@ repository.workspace = true
 description = "AeroX Bevy ECS 整合层"
 
 [dependencies]
-# bevy = { workspace = true }  # 后续启用
+# Bevy ECS
+bevy = { version = "0.14", default-features = false }
+
+# 内部依赖
+aerox_core = { workspace = true }
+aerox_network = { workspace = true }
+bytes = { workspace = true }
