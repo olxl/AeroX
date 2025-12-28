@@ -9,9 +9,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // 示例 1: 设置环境变量
     println!("1. 设置环境变量:");
-    std::env::set_var("AEROX_PORT", "9999");
-    std::env::set_var("AEROX_BIND_ADDRESS", "127.0.0.1");
-    std::env::set_var("AEROX_MAX_CONNECTIONS", "5000");
+    unsafe {
+        std::env::set_var("AEROX_PORT", "9999");
+        std::env::set_var("AEROX_BIND_ADDRESS", "127.0.0.1");
+        std::env::set_var("AEROX_MAX_CONNECTIONS", "5000");
+    }
     println!("   AEROX_PORT=9999");
     println!("   AEROX_BIND_ADDRESS=127.0.0.1");
     println!("   AEROX_MAX_CONNECTIONS=5000");
@@ -40,9 +42,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!();
 
     // 清理环境变量
-    std::env::remove_var("AEROX_PORT");
-    std::env::remove_var("AEROX_BIND_ADDRESS");
-    std::env::remove_var("AEROX_MAX_CONNECTIONS");
+    unsafe {
+        std::env::remove_var("AEROX_PORT");
+        std::env::remove_var("AEROX_BIND_ADDRESS");
+        std::env::remove_var("AEROX_MAX_CONNECTIONS");
+    }
 
     println!("5. 清理环境变量后:");
     let config = ServerConfig::default().load_with_env_override()?;

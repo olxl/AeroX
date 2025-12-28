@@ -18,9 +18,9 @@ mod tests {
 
     #[test]
     fn test_id_generator() {
-        let gen = ConnectionIdGenerator::new();
-        let id1 = gen.next();
-        let id2 = gen.next();
+        let generator = ConnectionIdGenerator::new();
+        let id1 = generator.next();
+        let id2 = generator.next();
         assert_eq!(id1.value(), 1);
         assert_eq!(id2.value(), 2);
     }

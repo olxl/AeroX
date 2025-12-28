@@ -17,12 +17,16 @@ mod config_tests {
 
     #[test]
     fn test_config_env_override() {
-        env::set_var("AEROX_PORT", "9999");
+        unsafe {
+            env::set_var("AEROX_PORT", "9999");
+        }
         let config = ServerConfig::default()
             .load_with_env_override()
             .unwrap();
         assert_eq!(config.port, 9999);
-        env::remove_var("AEROX_PORT");
+        unsafe {
+            env::remove_var("AEROX_PORT");
+        }
     }
 
     #[test]
