@@ -1,4 +1,24 @@
-//! AeroX Quick Start Example
+//! # ⚠️ 实验性示例 - 请勿在生产环境使用 ⚠️
+//!
+//! ## 警告
+//!
+//! 此示例使用了**尚未完成的高级 API**，仅供演示 API 结构使用。
+//!
+//! - `App::run()` 目前只是一个 **stub 实现**
+//! - 服务器**不会实际启动** TCP 监听
+//! - 连接会**失败**并返回错误
+//!
+//! ## 请使用以下完整示例
+//!
+//! ✅ **ecs_basics** - 完整的 ECS 游戏服务器
+//! ✅ **router_middleware** - 路由和中间件演示
+//! ✅ **complete_game_server** - 完整的多玩家游戏服务器
+//!
+//! ## 仅供参考
+//!
+//! 本示例仅用于展示未来的 API 设计方向，不要依赖它进行开发。
+//!
+//! # AeroX Quick Start Example
 //!
 //! Demonstrates basic server-client communication using the high-level API.
 //!
