@@ -1,14 +1,11 @@
 # AeroX
 
 <div align="center">
-
-**高性能游戏服务器后端框架**
+  高性能游戏服务器后端框架
 
 [![Rust](https://img.shields.io/badge/rust-1.75+-orange.svg)](https://www.rust-lang.org)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Version](https://img.shields.io/badge/version-0.1.0--green.svg)](https://github.com/aerox/aerox)
-
-</div>
 
 ## 简介
 
@@ -276,7 +273,6 @@ cargo test --release --features benchmark
 ---
 
 <div align="center">
-
-**Made with ❤️ by AeroX Team**
-
+Made with ❤️ by AeroX Team
 </div>
+
