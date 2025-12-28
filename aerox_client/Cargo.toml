@@ -1,11 +1,12 @@
 [package]
 name = "aerox_client"
-version.workspace = true
-edition.workspace = true
-authors.workspace = true
-license.workspace = true
-repository.workspace = true
-description = "AeroX client library for connecting to AeroX servers"
+version = "0.1.1"
+edition = "2024"
+rust-version = "1.92.0"
+authors = ["AeroX Team"]
+license = "MIT"
+repository = "https://github.com/cherish-ltt/AeroX"
+description = "用于连接到AeroX服务器的AeroX客户端库"
 
 [dependencies]
 # Workspace dependencies
@@ -17,9 +18,9 @@ prost = { workspace = true }
 async-trait = "0.1"
 
 # Internal crates
-aerox_core = { workspace = true }
-aerox_network = { workspace = true }
-aerox_protobuf = { workspace = true }
+aerox_core = { path = "../aerox_core" , version = "0.1.1" }
+aerox_network = { path = "../aerox_network" , version = "0.1.1" }
+aerox_protobuf = { path = "../aerox_protobuf" , version = "0.1.1" }
 
 # Additional client dependencies
 futures = "0.3"

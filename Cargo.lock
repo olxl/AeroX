@@ -13,7 +13,7 @@ name = "aerox"
 version = "0.1.1"
 dependencies = [
  "aerox_client",
- "aerox_config",
+ "aerox_config 0.1.1",
  "aerox_core",
  "aerox_ecs",
  "aerox_network",
@@ -55,10 +55,21 @@ dependencies = [
 ]
 
 [[package]]
+name = "aerox_config"
+version = "0.1.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "73e5de033693e75179b13faface601ae3ce0fc0b4b834937dde35e13ac64b01b"
+dependencies = [
+ "serde",
+ "thiserror 2.0.17",
+ "toml",
+]
+
+[[package]]
 name = "aerox_core"
 version = "0.1.1"
 dependencies = [
- "aerox_config",
+ "aerox_config 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "aerox_ecs",
  "aerox_network",
  "aerox_protobuf",
@@ -82,7 +93,7 @@ dependencies = [
 name = "aerox_network"
 version = "0.1.1"
 dependencies = [
- "aerox_config",
+ "aerox_config 0.1.1",
  "aerox_core",
  "aerox_router",
  "bytes",
@@ -97,7 +108,7 @@ dependencies = [
 name = "aerox_plugins"
 version = "0.1.1"
 dependencies = [
- "aerox_config",
+ "aerox_config 0.1.1",
  "aerox_core",
 ]
 

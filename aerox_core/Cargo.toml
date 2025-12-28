@@ -1,15 +1,16 @@
 [package]
 name = "aerox_core"
-version.workspace = true
-edition.workspace = true
-authors.workspace = true
-license.workspace = true
-repository.workspace = true
+version = "0.1.1"
+edition = "2024"
+rust-version = "1.92.0"
+authors = ["AeroX Team"]
+license = "MIT"
+repository = "https://github.com/cherish-ltt/AeroX"
 description = "AeroX 核心运行时和插件系统"
 
 [dependencies]
 tokio = { workspace = true }
-aerox_config = { workspace = true }
+aerox_config = { version = "0.1.1" }
 thiserror = { workspace = true }
 
 [dev-dependencies]
