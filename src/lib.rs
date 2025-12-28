@@ -14,6 +14,23 @@
 //!
 //! ## 快速开始
 //!
+//! ### 使用 Prelude（推荐）
+//!
+//! ```rust,no_run,ignore
+//! use aerox::prelude::*;  // 导入所有常用类型
+//!
+//! #[tokio::main]
+//! async fn main() -> Result<()> {
+//!     Server::bind("127.0.0.1:8080")
+//!         .route(1001, |ctx| async move {
+//!             println!("Received: {:?}", ctx.data());
+//!             Ok(())
+//!         })
+//!         .run()
+//!         .await
+//! }
+//! ```
+//!
 //! ### 服务器
 //!
 //! ```rust,no_run,ignore
@@ -46,27 +63,61 @@
 //!
 //! ## 模块组织
 //!
-//! ### 配置模块
+//! ### 配置模块 (aerox_config)
 //! - ServerConfig - 服务器基础配置
 //! - ReactorConfig - Reactor 模式配置
 //!
-//! ### 核心模块
+//! ### 核心模块 (aerox_core)
 //! - App - 应用构建器
 //! - Plugin - 插件 trait
-//! - PluginRegistry - 插件注册表
-//!
-//! ### 网络模块
-//! - Transport - 传输层抽象
-//! - Connection - 连接管理
+//! - State - 状态管理
+//! - Connection - 连接抽象
 //! - ConnectionId - 连接唯一标识
 //!
-//! ### 路由模块
-//! - Router - 消息路由器
-//! - Context - 请求上下文
+//! ### ECS 模块 (aerox_ecs)
+//! - EcsWorld - ECS 世界管理
+//! - NetworkBridge - 网络事件桥接
+//! - EventScheduler - 事件调度器
+//! - GameSystems - 游戏系统集合
+//! - 组件: Player, Position, Velocity, Health 等
+//! - 事件: ConnectionEstablishedEvent, MessageReceivedEvent 等
 //!
-//! ### 插件模块
+//! ### 网络模块 (aerox_network)
+//! - Transport - 传输层抽象
+//! - TcpReactor - TCP 反应器
+//! - Connection - 连接管理
+//! - ConnectionId - 连接唯一标识
+//! - MessageCodec - 消息编解码器
+//!
+//! ### Protobuf 模块 (aerox_protobuf)
+//! - MessageRegistry - 消息注册表
+//! - MessageEncoder - 消息编码器
+//! - encode_message/decode_message - 编解码函数
+//!
+//! ### 路由模块 (aerox_router)
+//! - Router - 消息路由器
+//! - Handler - 消息处理器 trait
+//! - Context - 请求上下文
+//! - Middleware - 中间件 trait
+//! - Extensions - 类型安全的扩展数据
+//!
+//! ### 插件模块 (aerox_plugins)
 //! - HeartbeatPlugin - 心跳检测插件
 //! - RateLimitPlugin - 限流插件
+//!
+//! ## 示例
+//!
+//! - `ecs_basics` - ECS 基础和位置更新系统
+//! - `router_middleware` - 路由和中间件系统
+//! - `complete_game_server` - 完整的游戏服务器示例
+//!
+//! 运行示例:
+//!
+//! ```bash
+//! cargo run --example ecs_basics
+//! cargo run --example router_middleware
+//! cargo run --example complete_game_server
+//! ```
 
 // ============================================================================
 // Conditional Compilation Based on Features
@@ -121,27 +172,80 @@ pub use aerox_client;
 /// 预导出常用类型
 ///
 /// 通过 `use aerox::prelude::*;` 导入所有常用类型
+///
+/// ## 包含的内容
+///
+/// ### 服务器端 API
+/// - 配置管理（aerox_config）
+/// - 核心运行时和插件系统（aerox_core）
+/// - ECS 游戏逻辑（aerox_ecs）
+/// - 网络传输层（aerox_network）
+/// - Protobuf 编解码（aerox_protobuf）
+/// - 路由和中间件（aerox_router）
+/// - 官方插件（aerox_plugins）
+///
+/// ### 客户端 API
+/// - 高级客户端（Client）
+/// - 流式客户端（StreamClient）
+///
+/// ### 高级 API
+/// - 服务器构建器（Server, ServerBuilder）
+///
+/// ### 统一错误处理
+/// - Error（统一错误类型）
+/// - Result（统一结果类型）
 pub mod prelude {
-    // Common types
+    // 标准库重导出
     pub use std::result::Result as StdResult;
 
+    // === 服务器端 API ===
+
+    // 配置模块
     #[cfg(feature = "server")]
     pub use aerox_config::{ServerConfig, ReactorConfig, ConfigError};
 
+    // 核心模块 - 应用、插件、连接管理
     #[cfg(feature = "server")]
-    pub use aerox_core::{App, Plugin, State};
+    pub use aerox_core::{
+        App,           // 应用构建器
+        Plugin,        // 插件 trait
+        State,         // 状态管理
+        Connection,    // 连接抽象
+        ConnectionId,  // 连接 ID
+        AeroXError,    // 统一错误类型
+        Result as CoreResult,  // 核心结果类型
+    };
 
+    // ECS 模块 - 游戏逻辑核心
+    #[cfg(feature = "server")]
+    pub use aerox_ecs::prelude::*;
+
+    // 网络模块 - 传输层
+    #[cfg(feature = "server")]
+    pub use aerox_network::prelude::*;
+
+    // Protobuf 支持 - 消息编解码
+    #[cfg(feature = "server")]
+    pub use aerox_protobuf::prelude::*;
+
+    // 路由系统 - 消息分发
     #[cfg(feature = "server")]
     pub use aerox_router::prelude::*;
 
+    // 官方插件
     #[cfg(feature = "server")]
     pub use aerox_plugins::prelude::*;
 
+    // === 客户端 API ===
     #[cfg(feature = "client")]
     pub use crate::client::{Client, StreamClient};
 
+    // === 高级 API ===
     #[cfg(feature = "server")]
     pub use crate::server::{Server, ServerBuilder};
+
+    // === 统一错误处理 ===
+    pub use crate::{Error, Result};
 }
 
 // ============================================================================
