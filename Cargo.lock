@@ -10,7 +10,7 @@ checksum = "6cf780eb737f2d4a49ffbd512324d53ad089070f813f7be7f99dbd5123a7f448"
 
 [[package]]
 name = "aerox"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "aerox_client",
  "aerox_config",
@@ -30,7 +30,7 @@ dependencies = [
 
 [[package]]
 name = "aerox_client"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "aerox_core",
  "aerox_network",
@@ -47,7 +47,7 @@ dependencies = [
 
 [[package]]
 name = "aerox_config"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "serde",
  "thiserror 2.0.17",
@@ -56,7 +56,7 @@ dependencies = [
 
 [[package]]
 name = "aerox_core"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "aerox_config",
  "aerox_ecs",
@@ -70,7 +70,7 @@ dependencies = [
 
 [[package]]
 name = "aerox_ecs"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "aerox_core",
  "aerox_network",
@@ -80,7 +80,7 @@ dependencies = [
 
 [[package]]
 name = "aerox_network"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "aerox_config",
  "aerox_core",
@@ -95,7 +95,7 @@ dependencies = [
 
 [[package]]
 name = "aerox_plugins"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "aerox_config",
  "aerox_core",
@@ -103,7 +103,7 @@ dependencies = [
 
 [[package]]
 name = "aerox_protobuf"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "bytes",
  "prost",
@@ -114,7 +114,7 @@ dependencies = [
 
 [[package]]
 name = "aerox_router"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "aerox_core",
  "bytes",
