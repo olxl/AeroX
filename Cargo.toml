@@ -26,7 +26,7 @@ edition = "2024"
 rust-version = "1.92.0"
 authors = ["AeroX Team"]
 license = "MIT"
-repository = "https://github.com/aerox/aerox"
+repository = "https://github.com/cherish-ltt/AeroX"
 
 [workspace.dependencies]
 # 异步运行时
@@ -36,7 +36,7 @@ tokio-util = { version = "0.7", features = ["codec"] }
 # 零拷贝字节缓冲
 bytes = "1.7"
 # 异步工具
-futures-util = "0.3"
+futures-util = { version = "0.3", features = ["sink"] }
 # 序列化支持
 serde = { version = "1.0", features = ["derive"] }
 # 错误处理
@@ -50,14 +50,14 @@ prost = "0.13"
 prost-types = "0.13"
 
 # 内部 crate 依赖
-aerox_config = { path = "aerox_config" }
-aerox_core = { path = "aerox_core" }
-aerox_network = { path = "aerox_network" }
-aerox_protobuf = { path = "aerox_protobuf" }
-aerox_ecs = { path = "aerox_ecs" }
-aerox_router = { path = "aerox_router" }
-aerox_plugins = { path = "aerox_plugins" }
-aerox_client = { path = "aerox_client" }
+aerox_config = { version = "0.1.1", path = "aerox_config" }
+aerox_core = { version = "0.1.1", path = "aerox_core" }
+aerox_network = { version = "0.1.1", path = "aerox_network" }
+aerox_protobuf = { version = "0.1.1", path = "aerox_protobuf" }
+aerox_ecs = { version = "0.1.1", path = "aerox_ecs" }
+aerox_router = { version = "0.1.1", path = "aerox_router" }
+aerox_plugins = { version = "0.1.1", path = "aerox_plugins" }
+aerox_client = { version = "0.1.1", path = "aerox_client" }
 
 [features]
 default = ["server", "client"]
@@ -82,14 +82,14 @@ client = [
 
 [dependencies]
 # Optional dependencies based on features
-aerox_config = { workspace = true, optional = true }
-aerox_core = { workspace = true, optional = true }
-aerox_network = { workspace = true, optional = true, features = ["aerox_router"] }
-aerox_protobuf = { workspace = true, optional = true }
-aerox_ecs = { workspace = true, optional = true }
-aerox_router = { workspace = true, optional = true }
-aerox_plugins = { workspace = true, optional = true }
-aerox_client = { workspace = true, optional = true }
+aerox_config = { version = "0.1.1", workspace = true, optional = true }
+aerox_core = { version = "0.1.1", workspace = true, optional = true }
+aerox_network = { version = "0.1.1", workspace = true, optional = true, features = ["aerox_router"] }
+aerox_protobuf = { version = "0.1.1", workspace = true, optional = true }
+aerox_ecs = { version = "0.1.1", workspace = true, optional = true }
+aerox_router = { version = "0.1.1", workspace = true, optional = true }
+aerox_plugins = { version = "0.1.1", workspace = true, optional = true }
+aerox_client = { version = "0.1.1", workspace = true, optional = true }
 
 # Always needed dependencies
 tokio = { workspace = true }

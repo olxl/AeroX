@@ -4,9 +4,7 @@
   <h1>AeroX</h1>
   高性能游戏服务器后端框架
 
-[![Rust](https://img.shields.io/badge/rust-1.92.0+-orange.svg)](https://www.rust-lang.org)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
-[![Version](https://img.shields.io/badge/version-0.1.1-green.svg)](https://github.com/aerox/aerox)
+[![Rust](https://img.shields.io/badge/rust-1.92.0+-orange.svg)](https://www.rust-lang.org)[![Crates.io](https://img.shields.io/crates/v/aerox)](https://crates.io/crates/aerox)  [![MIT licensed](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/cherish-ltt/aerox/blob/main/LICENSE) [![doc](https://docs.rs/aerox/badge.svg)](https://docs.rs/aerox/latest/aerox/) [![Downloads](https://img.shields.io/crates/d/aerox.svg)](https://crates.io/crates/aerox)
 
 </div>
 
@@ -306,6 +304,7 @@ cargo run --example benchmark
 
 - **GitHub**: https://github.com/cherish-ltt/AeroX
 - **Issue**: https://github.com/cherish-ltt/AeroX/issues
+- **Crate.io**: https://crates.io/crates/aerox
 
 ---
 

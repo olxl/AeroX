@@ -1,12 +1,13 @@
 [package]
 name = "aerox_plugins"
-version.workspace = true
-edition.workspace = true
-authors.workspace = true
-license.workspace = true
-repository.workspace = true
+version = "0.1.1"
+edition = "2024"
+rust-version = "1.92.0"
+authors = ["AeroX Team"]
+license = "MIT"
+repository = "https://github.com/cherish-ltt/AeroX"
 description = "AeroX 官方插件集合"
 
 [dependencies]
-aerox_core = { workspace = true }
-aerox_config = { workspace = true }
+aerox_core = { path = "../aerox_core" , version = "0.1.1" }
+aerox_config = { path = "../aerox_config" , version = "0.1.1" }
