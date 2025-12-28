@@ -23,6 +23,7 @@ dependencies = [
  "bytes",
  "futures-util",
  "prost",
+ "thiserror 2.0.17",
  "tokio",
  "tokio-util",
 ]
@@ -83,7 +84,9 @@ version = "0.1.0"
 dependencies = [
  "aerox_config",
  "aerox_core",
+ "aerox_router",
  "bytes",
+ "futures-util",
  "num_cpus",
  "thiserror 2.0.17",
  "tokio",
@@ -114,7 +117,6 @@ name = "aerox_router"
 version = "0.1.0"
 dependencies = [
  "aerox_core",
- "aerox_network",
  "bytes",
  "thiserror 2.0.17",
  "tokio",

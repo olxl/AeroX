@@ -9,8 +9,10 @@ use std::net::SocketAddr;
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::Arc;
 use std::time::Instant;
+use tokio::net::tcp::{OwnedReadHalf, OwnedWriteHalf};
 use tokio::net::TcpStream;
-use tokio_util::codec::Framed;
+use tokio::sync::mpsc;
+use tokio_util::codec::{Framed, FramedRead, FramedWrite};
 
 // Import MessageCodec from aerox_network
 use aerox_network::MessageCodec;
@@ -25,10 +27,13 @@ pub enum ClientState {
     ShuttingDown,
 }
 
-/// Client connection
+/// Client connection - split read/write for concurrent access
 pub struct ClientConnection {
-    /// Framed codec for reading/writing frames
-    framed: Framed<TcpStream, MessageCodec>,
+    /// Read half for receiving frames
+    read_half: FramedRead<OwnedReadHalf, MessageCodec>,
+
+    /// Channel sender for sending frames (write half is owned by sender task)
+    send_tx: mpsc::Sender<Frame>,
 
     /// Remote server address
     server_addr: SocketAddr,
@@ -65,8 +70,36 @@ impl ClientConnection {
             ClientError::ConnectionFailed(format!("Failed to get peer address: {}", e))
         })?;
 
-        // Create framed codec
-        let framed = Framed::new(stream, MessageCodec::new());
+        // Split the TcpStream into read and write halves
+        let (read_half, write_half) = stream.into_split();
+
+        // Create framed read and write halves
+        let read_half = FramedRead::new(read_half, MessageCodec::new());
+        let write_half = FramedWrite::new(write_half, MessageCodec::new());
+
+        // Create channel for sending frames
+        let (send_tx, mut send_rx) = mpsc::channel::<Frame>(128);
+
+        // Spawn background sender task
+        let state_clone = state.clone();
+        tokio::spawn(async move {
+            let mut write_half = write_half;
+            while let Some(frame) = send_rx.recv().await {
+                // Check connection state
+                {
+                    let state_guard = state_clone.read().await;
+                    if *state_guard != ClientState::Connected {
+                        break;
+                    }
+                }
+
+                // Send frame
+                if let Err(e) = write_half.send(frame).await {
+                    eprintln!("Send task error: {}", e);
+                    break;
+                }
+            }
+        });
 
         let now = Instant::now();
 
@@ -76,7 +109,8 @@ impl ClientConnection {
         drop(state_guard);
 
         Ok(Self {
-            framed,
+            read_half,
+            send_tx,
             server_addr,
             sequence_id: Arc::new(AtomicU64::new(0)),
             connected_at: now,
@@ -95,8 +129,8 @@ impl ClientConnection {
             }
         }
 
-        // Send frame through codec
-        self.framed
+        // Send frame through channel (non-blocking)
+        self.send_tx
             .send(frame)
             .await
             .map_err(|e| ClientError::SendFailed(e.to_string()))?;
@@ -137,9 +171,9 @@ impl ClientConnection {
             }
         }
 
-        // Receive frame through codec
+        // Receive frame through read half
         let frame = self
-            .framed
+            .read_half
             .next()
             .await
             .ok_or_else(|| ClientError::ReceiveFailed("Connection closed".to_string()))?
@@ -189,6 +223,11 @@ impl ClientConnection {
         *self.state.read().await == ClientState::Connected
     }
 
+    /// Get the send channel sender (for sending frames without locking)
+    pub fn get_send_tx(&self) -> mpsc::Sender<Frame> {
+        self.send_tx.clone()
+    }
+
     /// Close connection
     pub async fn close(mut self) -> Result<()> {
         // Update state to ShuttingDown
@@ -197,18 +236,10 @@ impl ClientConnection {
             *state = ClientState::ShuttingDown;
         }
 
-        // Close the framed codec
-        self.framed
-            .close()
-            .await
-            .map_err(|e| ClientError::ConnectionFailed(format!("Close failed: {}", e)))?;
+        // Drop the send channel to close the sender task
+        drop(self.send_tx);
 
         Ok(())
-    }
-
-    /// Get framed codec (for advanced usage)
-    pub fn framed(&mut self) -> &mut Framed<TcpStream, MessageCodec> {
-        &mut self.framed
     }
 }
 

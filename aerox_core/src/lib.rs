@@ -62,11 +62,13 @@
 //! ```
 
 pub mod app;
+pub mod connection;
 pub mod error;
 pub mod plugin;
 
 // 导出主要类型到 crate root
 pub use crate::app::{App, State};
+pub use crate::connection::{Connection, ConnectionId, ConnectionIdGenerator, ConnectionState};
 pub use crate::error::{AeroXError, AeroXErrorKind, ErrorContext, Result};
 pub use crate::plugin::{Plugin, PluginRegistry};
 

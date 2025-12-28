@@ -62,6 +62,12 @@ impl App {
         self
     }
 
+    /// 添加已装箱的插件（内部使用）
+    pub fn add_boxed_plugin(mut self, plugin: Box<dyn Plugin>) -> Self {
+        let _ = self.plugin_registry.add(plugin);
+        self
+    }
+
     /// 设置服务器配置
     pub fn set_config(mut self, config: ServerConfig) -> Self {
         self.config = config;
@@ -118,10 +124,12 @@ impl App {
             .validate()
             .map_err(|e| AeroXError::config(e.to_string()))?;
 
-        // TODO: 启动 Reactor
         println!("AeroX 服务器启动中...");
-        println!("配置: {:?}", self.config.bind_address);
+        println!("监听地址: {}", self.config.bind_addr());
         println!("插件数量: {}", self.plugin_registry.count());
+
+        // 实际的服务器启动逻辑应该在更高层的 crate 中实现
+        // 这里只是配置验证和初始化
 
         Ok(())
     }

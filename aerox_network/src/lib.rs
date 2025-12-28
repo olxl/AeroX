@@ -10,6 +10,7 @@ pub mod transport;
 // 导出主要类型到 crate root
 pub use crate::connection::{Connection, ConnectionId, ConnectionIdGenerator};
 pub use crate::protocol::{Frame, FrameError, MessageCodec, MessageDecoder, MessageEncoder};
+pub use crate::reactor::reactor::TcpReactor;
 pub use crate::transport::Transport;
 // 重新导出 aerox_core 的错误类型
 pub use aerox_core::{AeroXError, Result};

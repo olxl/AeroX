@@ -7,11 +7,17 @@ license.workspace = true
 repository.workspace = true
 description = "AeroX 网络层抽象和协议实现"
 
+[features]
+default = []
+aerox_router = ["dep:aerox_router"]
+
 [dependencies]
 tokio = { workspace = true }
 tokio-util = { workspace = true }
 bytes = { workspace = true }
+futures-util = { workspace = true }
 thiserror = { workspace = true }
 aerox_core = { workspace = true }
 aerox_config = { workspace = true }
 num_cpus = { workspace = true }
+aerox_router = { path = "../aerox_router", optional = true }

@@ -265,7 +265,7 @@ impl Middleware for TimeoutMiddleware {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use aerox_network::ConnectionId;
+    use aerox_core::ConnectionId;
     use bytes::Bytes;
 
     // 简单的测试处理器

@@ -41,6 +41,14 @@ pub struct Router {
     routes: HashMap<u16, Box<dyn Handler>>,
 }
 
+impl std::fmt::Debug for Router {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("Router")
+            .field("route_count", &self.routes.len())
+            .finish()
+    }
+}
+
 impl Router {
     /// 创建新路由器
     pub fn new() -> Self {
@@ -110,7 +118,7 @@ impl Default for Router {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use aerox_network::ConnectionId;
+    use aerox_core::ConnectionId;
     use bytes::Bytes;
 
     // 简单的测试处理器

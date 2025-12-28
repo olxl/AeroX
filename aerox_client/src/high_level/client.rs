@@ -14,7 +14,10 @@ use tokio::sync::broadcast;
 /// Automatically receives messages in the background and dispatches them to
 /// registered handlers.
 pub struct HighLevelClient {
+    /// Connection for receiving frames
     connection: Arc<tokio::sync::Mutex<ClientConnection>>,
+    /// Sender for sending frames (can be cloned and used without locking)
+    send_tx: tokio::sync::mpsc::Sender<aerox_network::Frame>,
     handler_registry: Arc<HandlerRegistry>,
     event_tx: broadcast::Sender<ClientEvent>,
     receiver_handle: Arc<tokio::sync::Mutex<Option<tokio::task::JoinHandle<()>>>>,
@@ -32,6 +35,9 @@ impl HighLevelClient {
     pub async fn connect_with_config(config: ClientConfig) -> Result<Self> {
         // Create connection
         let connection = ClientConnection::connect(&config).await?;
+
+        // Extract the send_tx from the connection
+        let send_tx = connection.get_send_tx();
 
         // Create event channel
         let (event_tx, _) = broadcast::channel(100);
@@ -57,6 +63,7 @@ impl HighLevelClient {
 
         Ok(Self {
             connection,
+            send_tx,
             handler_registry,
             event_tx,
             receiver_handle: Arc::new(tokio::sync::Mutex::new(Some(receiver_handle))),
@@ -103,8 +110,8 @@ impl HighLevelClient {
                             msg_id: frame.message_id,
                         });
 
-                        // TODO: Dispatch to handler based on message type
-                        // For now, we just emit events
+                        // Dispatch to handler
+                        handler_registry.dispatch(frame.message_id, frame.body).await;
                     }
                     Err(e) => {
                         // Emit error event
@@ -155,8 +162,22 @@ impl HighLevelClient {
         msg_id: u16,
         message: &M,
     ) -> Result<()> {
-        let mut conn = self.connection.lock().await;
-        conn.send_message(msg_id, message).await?;
+        use bytes::BytesMut;
+        use prost::Message;
+
+        // Encode message
+        let mut buf = BytesMut::new();
+        message.encode(&mut buf)
+            .map_err(|e| crate::error::ClientError::SendFailed(format!("Encoding failed: {}", e)))?;
+
+        // Create frame (sequence ID will be 0 for now, could be improved)
+        let frame = aerox_network::Frame::new(msg_id, 0, buf.freeze());
+
+        // Send frame through channel (non-blocking, doesn't lock connection)
+        self.send_tx
+            .send(frame)
+            .await
+            .map_err(|e| crate::error::ClientError::SendFailed(e.to_string()))?;
 
         // Emit message sent event
         let _ = self.event_tx.send(ClientEvent::MessageSent { msg_id });

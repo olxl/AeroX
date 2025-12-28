@@ -12,34 +12,36 @@
 //! - 灵活的路由和中间件系统
 //! - 插件化架构
 //!
-//! ## Crate 结构
-//!
-//! - [`aerox_config`] - 配置管理系统
-//! - [`aerox_core`] - 核心运行时和插件系统
-//! - [`aerox_network`] - 网络层抽象和协议实现
-//! - [`aerox_protobuf`] - Protobuf 编解码支持
-//! - [`aerox_ecs`] - Bevy ECS 整合层
-//! - [`aerox_router`] - 路由和中间件系统
-//! - [`aerox_plugins`] - 官方插件集合
-//!
 //! ## 快速开始
 //!
+//! ### 服务器
+//!
 //! ```rust,no_run,ignore
-//! use aerox::prelude::*;
+//! use aerox::Server;
 //!
 //! #[tokio::main]
 //! async fn main() -> aerox::Result<()> {
-//!     // 创建应用
-//!     let app = App::new()
-//!         .add_plugin(HeartbeatPlugin::default())
-//!         .set_config(ServerConfig::default());
+//!     Server::bind("127.0.0.1:8080")
+//!         .route(1001, |ctx| async move {
+//!             println!("Received: {:?}", ctx.data());
+//!             Ok(())
+//!         })
+//!         .run()
+//!         .await
+//! }
+//! ```
 //!
-//!     // 运行服务器
-//!     app.run().await?;
+//! ### 客户端
 //!
+//! ```rust,no_run,ignore
+//! use aerox::Client;
+//!
+//! #[tokio::main]
+//! async fn main() -> aerox::Result<()> {
+//!     let mut client = Client::connect("127.0.0.1:8080").await?;
+//!     client.send(1001, &message).await?;
 //!     Ok(())
 //! }
-//! # Ok::<(), Box<dyn std::error::Error>>(())
 //! ```
 //!
 //! ## 模块组织
@@ -66,40 +68,122 @@
 //! - HeartbeatPlugin - 心跳检测插件
 //! - RateLimitPlugin - 限流插件
 
-// 重新导出所有子 crate
+// ============================================================================
+// Conditional Compilation Based on Features
+// ============================================================================
+
+// Client API
+#[cfg(feature = "client")]
+pub mod client;
+
+#[cfg(feature = "client")]
+pub use crate::client::{Client, StreamClient};
+
+// Server API
+#[cfg(feature = "server")]
+pub mod server;
+
+#[cfg(feature = "server")]
+pub use crate::server::{Server, ServerBuilder};
+
+// ============================================================================
+// Crate Re-exports (for advanced users)
+// ============================================================================
+
+#[cfg(feature = "server")]
 pub use aerox_config;
+
+#[cfg(feature = "server")]
 pub use aerox_core;
+
+#[cfg(feature = "server")]
 pub use aerox_network;
+
+#[cfg(feature = "server")]
 pub use aerox_protobuf;
+
+#[cfg(feature = "server")]
 pub use aerox_ecs;
+
+#[cfg(feature = "server")]
 pub use aerox_router;
+
+#[cfg(feature = "server")]
 pub use aerox_plugins;
 
-// 预导出常用类型
+#[cfg(feature = "client")]
+pub use aerox_client;
+
+// ============================================================================
+// Prelude Module
+// ============================================================================
+
+/// 预导出常用类型
+///
+/// 通过 `use aerox::prelude::*;` 导入所有常用类型
 pub mod prelude {
-    // 配置
+    // Common types
+    pub use std::result::Result as StdResult;
+
+    #[cfg(feature = "server")]
     pub use aerox_config::{ServerConfig, ReactorConfig, ConfigError};
 
-    // 核心
-    pub use aerox_core::{App, Plugin};
-    pub use aerox_core::plugin::PluginRegistry;
+    #[cfg(feature = "server")]
+    pub use aerox_core::{App, Plugin, State};
 
-    // 网络
-    pub use aerox_network::{Connection, ConnectionId};
-
-    // 路由
+    #[cfg(feature = "server")]
     pub use aerox_router::prelude::*;
 
-    // 插件
+    #[cfg(feature = "server")]
     pub use aerox_plugins::prelude::*;
 
-    // 常用 Result 类型
-    pub use std::result::Result as StdResult;
+    #[cfg(feature = "client")]
+    pub use crate::client::{Client, StreamClient};
+
+    #[cfg(feature = "server")]
+    pub use crate::server::{Server, ServerBuilder};
 }
 
-/// AeroX 统一错误类型
-pub type Result<T> = std::result::Result<T, Box<dyn std::error::Error + Send + Sync>>;
+// ============================================================================
+// Error Types
+// ============================================================================
 
-// 版本信息
+/// AeroX 统一错误类型
+pub type Result<T> = std::result::Result<T, Error>;
+
+/// AeroX 统一错误枚举
+#[derive(Debug, thiserror::Error)]
+pub enum Error {
+    /// 核心错误
+    #[cfg(feature = "server")]
+    #[error(transparent)]
+    Core(#[from] aerox_core::AeroXError),
+
+    /// 客户端错误
+    #[cfg(feature = "client")]
+    #[error(transparent)]
+    Client(#[from] aerox_client::ClientError),
+
+    /// 配置错误
+    #[cfg(feature = "server")]
+    #[error(transparent)]
+    Config(#[from] aerox_config::ConfigError),
+
+    /// IO 错误
+    #[error(transparent)]
+    Io(#[from] std::io::Error),
+
+    /// 自定义错误
+    #[error("{0}")]
+    Custom(String),
+}
+
+// ============================================================================
+// Version Information
+// ============================================================================
+
+/// AeroX 版本号
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
+
+/// AeroX 包名
 pub const NAME: &str = env!("CARGO_PKG_NAME");

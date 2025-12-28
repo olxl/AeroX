@@ -58,20 +58,45 @@ aerox_router = { path = "aerox_router" }
 aerox_plugins = { path = "aerox_plugins" }
 aerox_client = { path = "aerox_client" }
 
+[features]
+default = ["server", "client"]
+
+# Server features - enables server-related APIs
+server = [
+    "dep:aerox_config",
+    "dep:aerox_core",
+    "dep:aerox_network",
+    "dep:aerox_protobuf",
+    "dep:aerox_ecs",
+    "dep:aerox_router",
+    "dep:aerox_plugins",
+]
+
+# Client features - enables client-related APIs
+client = [
+    "dep:aerox_client",
+    "dep:aerox_network",
+    "dep:aerox_protobuf",
+]
+
 [dependencies]
-aerox_config = { workspace = true }
-aerox_core = { workspace = true }
-aerox_network = { workspace = true }
-aerox_protobuf = { workspace = true }
-aerox_ecs = { workspace = true }
-aerox_router = { workspace = true }
-aerox_plugins = { workspace = true }
-aerox_client = { workspace = true }
+# Optional dependencies based on features
+aerox_config = { workspace = true, optional = true }
+aerox_core = { workspace = true, optional = true }
+aerox_network = { workspace = true, optional = true, features = ["aerox_router"] }
+aerox_protobuf = { workspace = true, optional = true }
+aerox_ecs = { workspace = true, optional = true }
+aerox_router = { workspace = true, optional = true }
+aerox_plugins = { workspace = true, optional = true }
+aerox_client = { workspace = true, optional = true }
+
+# Always needed dependencies
 tokio = { workspace = true }
 tokio-util = { workspace = true }
 bytes = { workspace = true }
 futures-util = { workspace = true }
 prost = { workspace = true }
+thiserror = { workspace = true }
 
 [dev-dependencies]
 tokio = { workspace = true, features = ["test-util", "macros"] }

@@ -9,7 +9,7 @@ pub mod router;
 // 重新导出主要类型
 pub use crate::context::{Context, Extensions};
 pub use crate::middleware::{Layer, LoggingMiddleware, Middleware, Next, Stack, TimeoutMiddleware};
-pub use crate::router::Handler;
+pub use crate::router::{Handler, Router};
 
 // 重新导出错误类型
 pub use aerox_core::{AeroXError, Result};

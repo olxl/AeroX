@@ -5,6 +5,7 @@ use async_trait::async_trait;
 use std::any::Any;
 use std::collections::HashMap;
 use std::sync::Arc;
+use bytes::Bytes;
 
 /// Message handler trait
 #[async_trait]
@@ -48,11 +49,12 @@ where
     }
 }
 
-/// Handler registry (simplified - tracks which message IDs have handlers)
+/// Type-erased handler that can decode and handle messages from bytes
+type ErasedHandler = Box<dyn Fn(u16, Bytes) -> std::pin::Pin<Box<dyn std::future::Future<Output = Result<()>> + Send>> + Send + Sync>;
+
+/// Handler registry
 pub struct HandlerRegistry {
-    // For now, we just track which message IDs have handlers registered
-    // The actual handling is done by callbacks registered elsewhere
-    handlers: tokio::sync::RwLock<HashMap<u16, bool>>,
+    handlers: tokio::sync::RwLock<HashMap<u16, ErasedHandler>>,
 }
 
 impl HandlerRegistry {
@@ -62,15 +64,38 @@ impl HandlerRegistry {
         }
     }
 
-    /// Register that a handler exists for this message ID
-    pub async fn register<M, H>(&self, msg_id: u16, _handler: H) -> Result<()>
+    /// Register a handler for a message ID
+    pub async fn register<M, H>(&self, msg_id: u16, handler: H) -> Result<()>
     where
         M: prost::Message + Default + Send + 'static,
         H: MessageHandler<M> + 'static,
     {
+        // Wrap handler in Arc before moving into closure
+        let handler = Arc::new(handler);
+
+        let erased_handler: ErasedHandler = Box::new(move |mid: u16, data: Bytes| {
+            let handler = handler.clone();
+            Box::pin(async move {
+                // Decode the message
+                let message = M::decode(data.as_ref())
+                    .map_err(|e| crate::error::ClientError::ReceiveFailed(format!("Failed to decode message: {}", e)))?;
+
+                // Call the handler
+                handler.handle(mid, message).await
+            })
+        });
+
         let mut handlers = self.handlers.write().await;
-        handlers.insert(msg_id, true);
+        handlers.insert(msg_id, erased_handler);
         Ok(())
+    }
+
+    /// Dispatch a message to the appropriate handler
+    pub async fn dispatch(&self, msg_id: u16, data: Bytes) {
+        let handlers = self.handlers.read().await;
+        if let Some(handler) = handlers.get(&msg_id) {
+            let _ = handler(msg_id, data).await;
+        }
     }
 
     /// Check if a handler exists for a message ID

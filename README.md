@@ -47,32 +47,105 @@ Network Layer         ┌─────────┐ ┌───────
 
 ```toml
 [dependencies]
-aerox_core = "0.1"
-aerox_network = "0.1"
-aerox_ecs = "0.1"
+aerox = "0.1"
 ```
 
-### Echo Server 示例
+### 特性标志
+
+AeroX 支持按需编译，您可以选择只启用需要的功能：
+
+```toml
+# 默认：包含服务器和客户端功能
+aerox = "0.1"
+
+# 仅服务器
+aerox = { version = "0.1", default-features = false, features = ["server"] }
+
+# 仅客户端
+aerox = { version = "0.1", default-features = false, features = ["client"] }
+```
+
+### 服务器示例
+
+使用统一的高-level API 快速创建服务器：
 
 ```rust
-use aerox_network::TcpReactor;
-use aerox_config::ServerConfig;
+use aerox::Server;
 
 #[tokio::main]
-async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let config = ServerConfig::default();
-    let mut reactor = TcpReactor::new(config).await?;
+async fn main() -> aerox::Result<()> {
+    Server::bind("127.0.0.1:8080")
+        .route(1001, |ctx| async move {
+            println!("收到消息: {:?}", ctx.data());
+            Ok(())
+        })
+        .run()
+        .await
+}
+```
 
-    println!("✓ 服务器启动在 {}", reactor.bind_addr());
+### 客户端示例
 
-    let handle = reactor.start()?;
+使用统一的客户端 API 连接到服务器：
 
-    // 等待 Ctrl+C
-    tokio::signal::ctrl_c().await?;
-    reactor.shutdown().await?;
+```rust
+use aerox::Client;
+
+#[tokio::main]
+async fn main() -> aerox::Result<()> {
+    let mut client = Client::connect("127.0.0.1:8080").await?;
+
+    // 注册消息处理器
+    client.on_message(1001, |id, msg: MyMessage| async move {
+        println!("收到: {:?}", msg);
+        Ok(())
+    }).await?;
+
+    // 发送消息
+    client.send(1001, &my_message).await?;
 
     Ok(())
 }
+```
+
+### 完整示例
+
+运行快速开始示例：
+
+```bash
+cargo run --example start
+```
+
+### 高级用法
+
+如果需要更多控制，可以使用底层 API：
+
+```rust
+use aerox::prelude::*;
+
+#[tokio::main]
+async fn main() -> aerox::Result<()> {
+    let app = App::new()
+        .set_config(ServerConfig::default())
+        .add_plugin(HeartbeatPlugin::default())
+        .add_plugin(RateLimitPlugin::new(1000))
+        .insert_state(MyAppState::new());
+
+    app.run().await?;
+    Ok(())
+}
+```
+
+### 旧版示例
+
+对于使用底层 API 的示例，请参考：
+
+```bash
+# Echo Server
+cargo run --example echo_server
+
+# 聊天室
+cargo run --example chat_room
 ```
 
 ### 运行示例

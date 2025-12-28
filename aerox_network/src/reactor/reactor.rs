@@ -10,6 +10,10 @@ use std::sync::Arc;
 use tokio::net::TcpListener;
 use tokio::task::JoinHandle;
 
+#[cfg(feature = "aerox_router")]
+use aerox_router::Router;
+use std::sync::Arc as StdArc;
+
 /// TCP Reactor
 ///
 /// 基于 Reactor 模式的 TCP 服务器
@@ -20,6 +24,9 @@ pub struct TcpReactor {
     reactor_config: ReactorConfig,
     /// Worker 任务句柄
     worker_handles: Vec<JoinHandle<Result<()>>>,
+    /// 路由器（可选）
+    #[cfg(feature = "aerox_router")]
+    router: Option<StdArc<Router>>,
 }
 
 impl TcpReactor {
@@ -29,12 +36,21 @@ impl TcpReactor {
             server_config,
             reactor_config,
             worker_handles: Vec::new(),
+            #[cfg(feature = "aerox_router")]
+            router: None,
         }
     }
 
     /// 使用默认配置创建
     pub fn with_defaults() -> Self {
         Self::new(ServerConfig::default(), ReactorConfig::default())
+    }
+
+    /// 设置路由器
+    #[cfg(feature = "aerox_router")]
+    pub fn with_router(mut self, router: StdArc<Router>) -> Self {
+        self.router = Some(router);
+        self
     }
 
     /// 启动 Reactor
@@ -72,6 +88,8 @@ impl TcpReactor {
             let config = crate::reactor::worker::WorkerConfig {
                 id,
                 channel_size: self.reactor_config.reactor_buffer_size,
+                #[cfg(feature = "aerox_router")]
+                router: self.router.clone(),
             };
 
             let (worker, tx) = Worker::new(config);

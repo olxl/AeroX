@@ -2,9 +2,10 @@
 //!
 //! 包含请求的所有相关信息。
 
-use aerox_network::ConnectionId;
+use aerox_core::ConnectionId;
 use bytes::Bytes;
 use std::net::SocketAddr;
+use tokio::sync::mpsc;
 
 /// 请求上下文
 ///
@@ -25,6 +26,8 @@ pub struct Context {
     pub extensions: Extensions,
     /// 请求时间戳
     pub timestamp: std::time::Instant,
+    /// 响应发送器 (用于向连接发送响应)
+    pub responder: Option<mpsc::Sender<(u16, Bytes)>>,
 }
 
 impl Context {
@@ -44,6 +47,43 @@ impl Context {
             data,
             extensions: Extensions::default(),
             timestamp: std::time::Instant::now(),
+            responder: None,
+        }
+    }
+
+    /// 创建带有响应发送器的上下文
+    pub fn with_responder(
+        connection_id: ConnectionId,
+        peer_addr: SocketAddr,
+        message_id: u16,
+        sequence_id: u32,
+        data: Bytes,
+        responder: mpsc::Sender<(u16, Bytes)>,
+    ) -> Self {
+        Self {
+            connection_id,
+            peer_addr,
+            message_id,
+            sequence_id,
+            data,
+            extensions: Extensions::default(),
+            timestamp: std::time::Instant::now(),
+            responder: Some(responder),
+        }
+    }
+
+    /// 发送响应消息
+    ///
+    /// 如果设置了 responder，则向连接发送响应消息
+    pub async fn respond(&self, msg_id: u16, data: Bytes) -> Result<(), String> {
+        if let Some(ref sender) = self.responder {
+            sender
+                .send((msg_id, data))
+                .await
+                .map_err(|e| format!("Failed to send response: {}", e))?;
+            Ok(())
+        } else {
+            Err("No responder set".to_string())
         }
     }
 
