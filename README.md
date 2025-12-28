@@ -1,6 +1,7 @@
-# AeroX
+
 
 <div align="center">
+  <h1>AeroX</h1>
   高性能游戏服务器后端框架
 
 [![Rust](https://img.shields.io/badge/rust-1.92.0+-orange.svg)](https://www.rust-lang.org)
@@ -261,7 +262,7 @@ cargo run --example benchmark
 
 ## 贡献
 
-欢迎贡献！请查看 [开发指南](docs/development.md) 了解详情。
+欢迎贡献！
 
 1. Fork 本仓库
 2. 创建特性分支 (`git checkout -b feature/AmazingFeature`)
@@ -298,13 +299,13 @@ cargo run --example benchmark
 ## 致谢
 
 - [Tokio](https://tokio.rs/) - 异步运行时
-- [Bevy](https://bevyengine.org/) - ECS 框架
+- [Bevy](https://bevy.org/) - ECS 框架
 - [Axum](https://github.com/tokio-rs/axum) - 中间件设计灵感
 
 ## 联系方式
 
-- **GitHub**: [https://github.com/aerox/aerox](https://github.com/aerox/aerox)
-- **Issue**: [https://github.com/aerox/aerox/issues](https://github.com/aerox/aerox/issues)
+- **GitHub**: https://github.com/cherish-ltt/AeroX
+- **Issue**: https://github.com/cherish-ltt/AeroX/issues
 
 ---
 
